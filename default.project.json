@@ -4,8 +4,11 @@
     "$className": "DataModel",
 
     "ReplicatedStorage": {
-      "Common": {
+      "Shared": {
         "$path": "src/shared"
+      },
+      "Packages": {
+        "$path": "Packages"
       }
     },
 
@@ -20,12 +23,6 @@
         "Client": {
           "$path": "src/client"
         }
-      }
-    },
-
-    "SoundService": {
-      "$properties": {
-        "RespectFilteringEnabled": true
       }
     }
   }
