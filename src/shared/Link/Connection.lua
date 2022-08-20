@@ -1,29 +1,96 @@
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
 local Packages = ReplicatedStorage.Packages
 
 local FastSignal = require(Packages.fastsignal)
+local QuickInstance = require(script.Parent.QuickInstance)
 
-local IsServer = RunService:IsServer()
-local IsClient = RunService:IsClient()
+local Connections = 0
+
+local function IsServer(method)
+	if RunService:IsClient() then
+		error(method .. " can only be called on the server")
+	end
+end
+
+local function IsClient(method)
+	if RunService:IsServer() then
+		error(method .. " can only be called on the client")
+	end
+end
+
+local function FindLinkFolder()
+	local LinkFolder = ReplicatedStorage:FindFirstChild("__Link")
+	if not LinkFolder then
+		LinkFolder = QuickInstance.new("Folder", ReplicatedStorage, {
+			Name = "__Link",
+		})
+	end
+	return LinkFolder
+end
+
+local function AddZero(number)
+	if number < 10 then
+		return "0" .. number
+	end
+	return number
+end
 
 export type Connection = {
 	__CommunicationType: "event" | "function";
 	__Remote: RemoteEvent | RemoteFunction;
-	Send: (any: any) -> ();
-	Recieve: FastSignal.Class;
+
+	FireClient: (Player: Player, ...any) -> ();
+	FireAllClients: (...any) -> ();
+	FireSelectedClients: (Array<Player>) -> ();
+	FireServer: (...any) -> ();
 }
 
 local Connection = {}
+Connection.__index = Connection
 
-function Connection.Send(self, ...)
-	self.__Remote:Fire(...)
+function Connection:FireClient(Player: Player, ...)
+	IsServer("Connection:FireClient()")
+	self.__Remote:FireClient(Player, ...)
 end
 
-function Connection.Recieve(self)
-	return self.__Remote.OnServerEvent
+function Connection:FireAllClients(...)
+	IsServer("Connection:FireAllClients()")
+	self.__Remote:FireAllClients(...)
 end
 
-function Connection.new()
+function Connection:FireSelectedClients(SelectedPlayers: Array<Player>, Whitelist: boolean, ...)
+	IsServer("Connection:FireSelectedClients()")
+	Whitelist = Whitelist or true
+	for _, Player in Players:GetPlayers() do
+		if table.find(SelectedPlayers, Player) == Whitelist then
+			self.__Remote:FireClient(Player, ...)
+		end
+	end
+end
+
+function Connection:FireServer(...)
+	IsClient("Connection:FireServer()")
+	self.__Remote:FireServer(...)
+end
+
+function Connection.new(Type: "RemoteEvent" | "RemoteFunction", Name: string)
+	IsServer("Connection.new()")
+	if Type ~= "RemoteEvent" and Type ~= "RemoteFunction" then
+		error("Type must be RemoteEvent or RemoteFunction")
+	end
+	FindLinkFolder()
+	local Remote = QuickInstance.new(Type, FindLinkFolder(), {
+		-- Name = "Remote_" .. AddZero(Connections),
+		Name = "Remote_" .. Name,
+	})
+
+	local self = {
+		__CommunicationType = Type,
+		__Remote = Remote,
+	}
+	return setmetatable(self, {__index = Connection})
+end
 
 return Connection
