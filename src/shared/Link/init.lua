@@ -12,7 +12,7 @@ local Link = {
 }
 
 function Link.CreateEvent(Name: string)
-	local NewConnection = EventLink.new(REMOTE_PREFIX .. Name .. REMOTE_SUFFIX)
+	local NewConnection = EventLink.new(REMOTE_PREFIX .. Name .. REMOTE_SUFFIX, Folder)
 	table.insert(Link.Connections, NewConnection)
 	return NewConnection
 end

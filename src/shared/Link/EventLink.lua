@@ -6,8 +6,6 @@ local Packages = ReplicatedStorage.Packages
 local FastSignal = require(Packages.fastsignal)
 local QuickInstance = require(script.Parent.QuickInstance)
 
-local LinkFolder = ReplicatedStorage:FindFirstChild("__Link") or QuickInstance("Folder", ReplicatedStorage, {Name = "__Link"})
-
 local function IsServer(method)
 	if RunService:IsClient() then
 		error(method .. " can only be called on the server")
@@ -19,13 +17,6 @@ local function IsClient(method)
 		error(method .. " can only be called on the client")
 	end
 end
-
--- local function AddZero(number)
--- 	if number < 10 then
--- 		return "0" .. number
--- 	end
--- 	return number
--- end
 
 export type Connection = {
 	__CommunicationType: "event" | "function";
@@ -65,9 +56,9 @@ function Connection:FireServer(...)
 	self.__Remote:FireServer(...)
 end
 
-function Connection.new(Name: string)
+function Connection.new(Name: string, Where: Folder)
 	IsServer("Connection.new()")
-	local Remote = QuickInstance("RemoteEvent", LinkFolder, {
+	local Remote = QuickInstance("RemoteEvent", Where, {
 		-- Name = "Remote_" .. AddZero(Connections),
 		Name = Name,
 	})
