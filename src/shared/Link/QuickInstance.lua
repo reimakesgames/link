@@ -1,6 +1,4 @@
-local QuickInstance = {}
-
-function QuickInstance.new(class, parent, props)
+return function(class, parent, props)
 	local NewInstance = Instance.new(class)
 	for k, v in pairs(props) do
 		NewInstance[k] = v
@@ -10,5 +8,3 @@ function QuickInstance.new(class, parent, props)
 	end
 	return NewInstance
 end
-
-return QuickInstance

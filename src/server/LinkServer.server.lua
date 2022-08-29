@@ -1,7 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Link = require(ReplicatedStorage.Shared.Link)
 
-local Real = Link.CreateLink("RemoteEvent", "LP")
+local Real = Link.CreateEvent("LP")
 while true do
 	task.wait(5)
 	Real:FireAllClients("One thing, I don't know why")
