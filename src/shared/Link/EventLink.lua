@@ -26,6 +26,7 @@ export type Connection = {
 	FireAllClients: (...any) -> ();
 	FireSelectedClients: (Array<Player>) -> ();
 	FireServer: (...any) -> ();
+	Event: FastSignal.Class
 }
 
 local Connection = {}
@@ -66,7 +67,25 @@ function Connection.new(Name: string, Where: Folder)
 	local self = {
 		__CommunicationType = "RemoteEvent",
 		__Remote = Remote,
+
+		Event = FastSignal.new(),
 	}
+	self.__Remote.OnServerEvent:Connect(function(Player, ...)
+		self.Event:Fire(Player, ...)
+	end)
+	return setmetatable(self, {__index = Connection})
+end
+
+function Connection.__newclient(Remote)
+	local self = {
+		__CommunicationType = "RemoteEvent",
+		__Remote = Remote,
+
+		Event = FastSignal.new(),
+	}
+	self.__Remote.OnClientEvent:Connect(function(...)
+		self.Event:Fire(...)
+	end)
 	return setmetatable(self, {__index = Connection})
 end
 
