@@ -32,9 +32,9 @@ export type Connection = {
 local Connection = {}
 Connection.__index = Connection
 
-function Connection:FireClient(Player: Player, ...)
+function Connection:FireClient(player: Player, ...)
 	IsServer("Connection:FireClient()")
-	self.__Remote:FireClient(Player, ...)
+	self.__Remote:FireClient(player, ...)
 end
 
 function Connection:FireAllClients(...)
@@ -42,11 +42,11 @@ function Connection:FireAllClients(...)
 	self.__Remote:FireAllClients(...)
 end
 
-function Connection:FireSelectedClients(SelectedPlayers: Array<Player>, Whitelist: boolean, ...)
+function Connection:FireSelectedClients(selectedPlayers: Array<Player>, whitelist: boolean, ...)
 	IsServer("Connection:FireSelectedClients()")
-	Whitelist = Whitelist or true
+	whitelist = whitelist or true
 	for _, Player in Players:GetPlayers() do
-		if table.find(SelectedPlayers, Player) == Whitelist then
+		if table.find(selectedPlayers, Player) == whitelist then
 			self.__Remote:FireClient(Player, ...)
 		end
 	end
@@ -57,11 +57,11 @@ function Connection:FireServer(...)
 	self.__Remote:FireServer(...)
 end
 
-function Connection.new(Name: string, Where: Folder)
+function Connection.new(name: string, where: Folder)
 	IsServer("Connection.new()")
-	local Remote = QuickInstance("RemoteEvent", Where, {
+	local Remote = QuickInstance("RemoteEvent", where, {
 		-- Name = "Remote_" .. AddZero(Connections),
-		Name = Name,
+		Name = name,
 	})
 
 	local self = {
@@ -76,10 +76,10 @@ function Connection.new(Name: string, Where: Folder)
 	return setmetatable(self, {__index = Connection})
 end
 
-function Connection.__newclient(Remote)
+function Connection.__newclient(remote)
 	local self = {
 		__CommunicationType = "RemoteEvent",
-		__Remote = Remote,
+		__Remote = remote,
 
 		Event = FastSignal.new(),
 	}

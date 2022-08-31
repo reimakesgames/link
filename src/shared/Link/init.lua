@@ -26,20 +26,20 @@ if IsClient then
 	end
 end
 
-function Link.CreateEvent(Name: string)
-	local IndexName = REMOTE_PREFIX .. Name .. REMOTE_SUFFIX
+function Link.CreateEvent(name: string)
+	local IndexName = REMOTE_PREFIX .. name .. REMOTE_SUFFIX
 	local NewConnection = EventLink.new(IndexName, Folder)
 	Link.Connections[IndexName] = NewConnection
 	return NewConnection
 end
 
-function Link.ConnectTo(Name: string, Handler: (...any) -> ())
-	if not Handler then
+function Link.ConnectTo(name: string, handler: (...any) -> ())
+	if not handler then
 		error("where is the handler function??")
 	end
-	local IndexName = REMOTE_PREFIX .. Name .. REMOTE_SUFFIX
+	local IndexName = REMOTE_PREFIX .. name .. REMOTE_SUFFIX
 
-	return Link.Connections[IndexName].Event:Connect(Handler)
+	return Link.Connections[IndexName].Event:Connect(handler)
 end
 
 return Link
