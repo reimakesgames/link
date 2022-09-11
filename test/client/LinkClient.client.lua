@@ -1,6 +1,8 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Link = require(ReplicatedStorage.Shared.Link)
+local Link = require(ReplicatedStorage.Packages.Link)
 
-Link.ConnectTo("LP", function(...)
+local Connection = Link.WaitConnection("LP", 10)
+
+Connection.Event:Connect(function(...)
 	print(...)
 end)

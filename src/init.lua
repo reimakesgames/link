@@ -33,13 +33,22 @@ function Link.CreateEvent(name: string)
 	return NewConnection
 end
 
-function Link.ConnectTo(name: string, handler: (...any) -> ())
-	if not handler then
-		error("where is the handler function??")
-	end
-	local IndexName = REMOTE_PREFIX .. name .. REMOTE_SUFFIX
+function Link.WaitEvent(name: string, timeout: number)
+	local Start = time()
+	local Timeout = Start + timeout or 86400
+	repeat
+		local Connection = Link.FindConnection(name)
+		if Connection then
+			return Connection
+		end
+		RunService.Heartbeat:Wait()
+	until Timeout <= time()
+	return nil
+end
 
-	return Link.Connections[IndexName].Event:Connect(handler)
+function Link.FindEvent(name: string)
+	local IndexName = REMOTE_PREFIX .. name .. REMOTE_SUFFIX
+	return Link.Connections[IndexName]
 end
 
 return Link
