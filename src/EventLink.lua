@@ -1,5 +1,4 @@
 local RunService = game:GetService("RunService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local Packages = script.Parent.Parent
 
@@ -44,9 +43,9 @@ end
 
 function Connection:FireSelectedClients(selectedPlayers: Array<Player>, whitelist: boolean, ...)
 	IsServer("Connection:FireSelectedClients()")
-	whitelist = whitelist or true
 	for _, Player in Players:GetPlayers() do
-		if table.find(selectedPlayers, Player) == whitelist then
+		local Selected = typeof(table.find(selectedPlayers, Player)) == "number"
+		if Selected == whitelist then
 			self.__Remote:FireClient(Player, ...)
 		end
 	end
