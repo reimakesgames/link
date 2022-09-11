@@ -1,7 +1,7 @@
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
-local Packages = ReplicatedStorage.Packages
+local Packages = script.Parent.Parent
 
 local FastSignal = require(Packages.fastsignal)
 local QuickInstance = require(script.Parent.QuickInstance)
