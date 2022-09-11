@@ -37,7 +37,7 @@ function Link.WaitEvent(name: string, timeout: number)
 	local Start = time()
 	local Timeout = Start + (timeout or 86400)
 	repeat
-		local Connection = Link.FindConnection(name)
+		local Connection = Link.FindEvent(name)
 		if Connection then
 			return Connection
 		end
