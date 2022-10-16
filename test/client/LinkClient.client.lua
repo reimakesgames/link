@@ -1,7 +1,20 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Link = require(ReplicatedStorage.Packages.Link)
 
-local Connection = Link.WaitConnection("LP", 10)
+local Connection = Link:WaitEvent("LP")
+local Function = Link:WaitFunction("LPF")
+
+print("started invoking")
+print("one thing")
+local Answer = Function:InvokeServer("one thing")
+print(Answer)
+print("when my time comes")
+Answer = Function:InvokeServer("when my time comes")
+print(Answer)
+print("WRRONG")
+Answer = Function:InvokeServer("WRRONG")
+print(Answer)
+print("invoked all")
 
 Connection.Event:Connect(function(...)
 	print(...)

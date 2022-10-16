@@ -17,7 +17,7 @@ local function IsClient(method)
 	end
 end
 
-export type Connection = {
+export type EventLink = {
 	__CommunicationType: "event" | "function";
 	__Remote: RemoteEvent | RemoteFunction;
 
@@ -28,20 +28,20 @@ export type Connection = {
 	Event: FastSignal.Class
 }
 
-local Connection = {}
-Connection.__index = Connection
+local EventLink = {}
+EventLink.__index = EventLink
 
-function Connection:FireClient(player: Player, ...)
+function EventLink:FireClient(player: Player, ...)
 	IsServer("Connection:FireClient()")
 	self.__Remote:FireClient(player, ...)
 end
 
-function Connection:FireAllClients(...)
+function EventLink:FireAllClients(...)
 	IsServer("Connection:FireAllClients()")
 	self.__Remote:FireAllClients(...)
 end
 
-function Connection:FireSelectedClients(selectedPlayers: Array<Player>, whitelist: boolean, ...)
+function EventLink:FireSelectedClients(selectedPlayers: Array<Player>, whitelist: boolean, ...)
 	IsServer("Connection:FireSelectedClients()")
 	for _, Player in Players:GetPlayers() do
 		local Selected = typeof(table.find(selectedPlayers, Player)) == "number"
@@ -51,12 +51,12 @@ function Connection:FireSelectedClients(selectedPlayers: Array<Player>, whitelis
 	end
 end
 
-function Connection:FireServer(...)
+function EventLink:FireServer(...)
 	IsClient("Connection:FireServer()")
 	self.__Remote:FireServer(...)
 end
 
-function Connection.new(name: string, where: Folder)
+function EventLink.new(name: string, where: Folder)
 	IsServer("Connection.new()")
 	local Remote = QuickInstance("RemoteEvent", where, {
 		-- Name = "Remote_" .. AddZero(Connections),
@@ -72,10 +72,10 @@ function Connection.new(name: string, where: Folder)
 	self.__Remote.OnServerEvent:Connect(function(Player, ...)
 		self.Event:Fire(Player, ...)
 	end)
-	return setmetatable(self, {__index = Connection})
+	return setmetatable(self, {__index = EventLink})
 end
 
-function Connection.__newclient(remote)
+function EventLink.__newclient(remote)
 	local self = {
 		__CommunicationType = "RemoteEvent",
 		__Remote = remote,
@@ -85,7 +85,7 @@ function Connection.__newclient(remote)
 	self.__Remote.OnClientEvent:Connect(function(...)
 		self.Event:Fire(...)
 	end)
-	return setmetatable(self, {__index = Connection})
+	return setmetatable(self, {__index = EventLink})
 end
 
-return Connection
+return EventLink
