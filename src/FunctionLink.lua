@@ -27,13 +27,13 @@ export type FunctionLink = {
 local FunctionLink = {}
 FunctionLink.__index = FunctionLink
 
-function FunctionLink:InvokeServer(...)
+function FunctionLink:InvokeServer(...: any)
 	IsClient("Connection:InvokeServer()")
 	return self.__Remote:InvokeServer(...)
 end
 
-function FunctionLink:InvokeClient(player: Player, ...)
-	print("WARNING: You are using InvokeClient! Roblox Documentation does not recommend using InvokeClient.")
+function FunctionLink:InvokeClient(player: Player, ...: any)
+	warn("WARNING: You are using InvokeClient! Roblox Documentation does not recommend using InvokeClient.")
 	IsServer("Connection:InvokeClient()")
 	self.__Remote:InvokeClient(player, ...)
 end
@@ -43,7 +43,7 @@ function FunctionLink:OnServerInvoke(callback: (player: Player, ...any) -> (...a
 	self.__Remote.OnServerInvoke = self.OnServerInvoke
 end
 
-function FunctionLink:OnClientInvoke(callback: (player: Player, ...any) -> (...any))
+function FunctionLink:OnClientInvoke(callback: (...any) -> (...any))
 	self.OnClientInvoke = callback
 	self.__Remote.OnClientInvoke = self.OnClientInvoke
 end

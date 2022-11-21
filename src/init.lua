@@ -13,7 +13,7 @@ local IS_CLIENT = RunService:IsClient()
 local Folder = ReplicatedStorage:FindFirstChild("__Link") or QuickInstance("Folder", ReplicatedStorage, {Name = "__Link"})
 
 export type Link = {
-	Connections: Dictionary<EventLink.EventLink | FunctionLink.FunctionLink>;
+	Connections: {[string]: EventLink.EventLink | FunctionLink.FunctionLink};
 	CreateEvent: (any, name: string) -> (EventLink.EventLink);
 	WaitEvent: (any, name: string, timeout: number?) -> (EventLink.EventLink?);
 	FindEvent: (any, name: string) -> (EventLink.EventLink?);

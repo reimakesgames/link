@@ -23,7 +23,7 @@ export type EventLink = {
 
 	FireClient: (Player: Player, ...any) -> ();
 	FireAllClients: (...any) -> ();
-	FireSelectedClients: (Array<Player>) -> ();
+	FireSelectedClients: ({[number]: Player}) -> ();
 	FireServer: (...any) -> ();
 	Event: FastSignal.Class
 }
@@ -41,12 +41,18 @@ function EventLink:FireAllClients(...)
 	self.__Remote:FireAllClients(...)
 end
 
-function EventLink:FireSelectedClients(selectedPlayers: Array<Player>, whitelist: boolean, ...)
-	IsServer("Connection:FireSelectedClients()")
-	for _, Player in Players:GetPlayers() do
-		local Selected = typeof(table.find(selectedPlayers, Player)) == "number"
-		if Selected == whitelist then
-			self.__Remote:FireClient(Player, ...)
+function EventLink:FireClients(selectedPlayers: {[number]: Player}, ...)
+	IsServer("Connection:FireClients()")
+	for _, player in pairs(selectedPlayers) do
+		self.__Remote:FireClient(player, ...)
+	end
+end
+
+function EventLink:FireClientsExcept(excludedPlayers: {[number]: Player}, ...)
+	IsServer("Connection:FireClientsExcept()")
+	for _, player in Players:GetPlayers() do
+		if not (typeof(table.find(excludedPlayers, player)) == "number") then
+			self.__Remote:FireClient(player, ...)
 		end
 	end
 end
